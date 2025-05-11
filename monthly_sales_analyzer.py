@@ -24,29 +24,104 @@ sales_data = [
 
 def total_sales_by_product(data, product_key):
     """Calculates the total sales of a specific product in 30 days."""
-    pass
+    total_sales_of_product_key = 0
+
+    for sale in sales_data:
+        if product_key:
+            total_sales_of_product_key += sale[product_key]
+    
+    return total_sales_of_product_key
 
 
 def average_daily_sales(data, product_key):
     """Calculates the average daily sales of a specific product."""
-    pass
+    total_sales_of_product_key = total_sales_by_product(data, product_key)
+
+    average_daily_sales_of_producty_key = total_sales_of_product_key / len(data)
+
+    return average_daily_sales_of_producty_key
 
 
 def best_selling_day(data):
     """Finds the day with the highest total sales."""
-    pass
+    best_selling_day = {"day": 0, "sells": 0} # This only works if there is no day with equal total sales. In case it happens this will only get the first day with that amount of sales
+
+    for selling_day in data:
+        total_sales_per_day = selling_day["product_a"] + selling_day["product_b"] + selling_day["product_c"]
+        if total_sales_per_day > best_selling_day["sells"]:
+            best_selling_day["day"] = selling_day["day"]
+            best_selling_day["sells"] = total_sales_per_day
+
+    return best_selling_day["day"]
 
 
 def days_above_threshold(data, product_key, threshold):
     """Counts how many days the sales of a product exceeded a given threshold."""
-    pass
+
+    days_above_threshold = 0
+
+    for selling_day in sales_data:
+        if selling_day[product_key] > threshold:
+            days_above_threshold += 1
+
+    return days_above_threshold
 
 
 def top_product(data):
     """Determines which product had the highest total sales in 30 days."""
-    pass
+
+    total_product_sales = {}
+
+    for selling_day in sales_data:
+        for product, value in selling_day.items():
+            if product != "day":
+                total_product_sales[product] = total_product_sales.get(product, 0) + value
+
+    top_product = max(total_product_sales, key=total_product_sales.get)
+    return top_product[-1].upper()
+
+def worst_product(data):
+    """Determines which product had the lowers total sales in 30 days."""
+    
+    total_product_sales = {}
+
+    for selling_day in sales_data:
+        for product, value in selling_day.items():
+            if product != "day":
+                total_product_sales[product] = total_product_sales.get(product, 0) + value
+
+    worst_product = min(total_product_sales, key=total_product_sales.get)
+    return worst_product[-1].upper()
 
 
+def sorted_by_sales_product(data):
+    """Sort all the products by selling in descending order."""
+    
+    total_product_sales = {}
+
+    for selling_day in sales_data:
+        for product, value in selling_day.items():
+            if product != "day":
+                total_product_sales[product] = total_product_sales.get(product, 0) + value
+
+    sorted_products = sorted(total_product_sales, key=total_product_sales.get)
+
+    final_sorted_product_by_letter = ""
+
+    for i in range(len(sorted_products)):
+        final_sorted_product_by_letter += sorted_products[i][-1].upper()
+        if i + 1 != len(sorted_products):
+            final_sorted_product_by_letter += ", "
+
+    return final_sorted_product_by_letter
+
+def max_min_range_of_a_product(data, product_key):
+    """Calculate the range (max - min) of the sales of a product."""
+
+    product_sales = [day[product_key] for day in data]
+    range_of_sales_by_product = max(product_sales) - min(product_sales)
+
+    return range_of_sales_by_product
 
 # Function tests
 print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a"))
@@ -54,3 +129,6 @@ print("Average daily sales of product_b:", average_daily_sales(sales_data, "prod
 print("Day with highest total sales:", best_selling_day(sales_data))
 print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
 print("Product with highest total sales:", top_product(sales_data))
+print("Product with lowest total sales:", worst_product(sales_data))
+print("Products sorted by sales in descending order:", sorted_by_sales_product(sales_data))
+print("Range of sales of product_a:", max_min_range_of_a_product(sales_data, "product_a"))
